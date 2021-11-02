@@ -20,7 +20,7 @@ class Test(unittest.TestCase):
                 required={"req_email": kwchecker.email_validator()},
                 opt={"opt_str": str},
             )
-            checker.validate(**kwargs)
+            checker.validate(kwargs)
 
         error_text = ""
         try:
@@ -73,15 +73,15 @@ class Test(unittest.TestCase):
                     "no_spaces": (
                         str,
                         kwchecker.no_regex_validator(
-                            r".*\s+$", "no trailing whitespaces allowed"
+                            r".*\s+$", "Error: no trailing whitespaces allowed"
                         ),
                         kwchecker.no_regex_validator(
-                            r"^\s+", "no leading whitespaces allowed"
+                            r"^\s+", "Error: no leading whitespaces allowed"
                         ),
                     ),
                 }
             )
-            checker.validate(**kwargs)
+            checker.validate(kwargs)
 
         func_to_test_regex(no_spaces="no-leading-and-trailing-spaces")
         
@@ -102,6 +102,28 @@ class Test(unittest.TestCase):
         self.assertEqual(
             error_text, "Error: no trailing whitespaces allowed"
         )
+
+    def test_sanitize(self):
+        def func_to_test(**kwargs):
+            checker = kwchecker.KwArgsChecker(required={
+                    "first_name": (
+                        str,
+                        kwchecker.strip_leading_trailing_space(),
+                    ),
+                    "last_name": (
+                        str,
+                        kwchecker.strip_leading_trailing_space(),
+                    )
+            })
+            checker.validate(kwargs)
+
+            return kwargs['first_name'], kwargs['last_name']
+
+
+        first_name, last_name = func_to_test(first_name=" Michael ", last_name="\tMoser" )
+
+        self.assertEqual( first_name, "Michael" )
+        self.assertEqual( last_name , "Moser" )
 
 
 if __name__ == "__main__":
