@@ -9,15 +9,23 @@ def strip_leading_trailing_space():
 
     return stip_spaces
 
+def _sanitize_db_imp(_param_name, param_value):
+    if isinstance(param_value, str):
+        return str(param_value).replace("'","").replace('"',"")
+    return None
+
+def sanitize_db():
+    return _sanitize_db_imp
+
 def to_lower_case():
     def to_lower(_param_name, param_value):
-        return str(param_value).to_lower_case()
+        return str(param_value).lower()
 
     return to_lower
 
-def to_lower_case():
+def to_upper_case():
     def to_upper(_param_name, param_value):
-        return str(param_value).to_upper_case()
+        return str(param_value).upper()
 
     return to_upper
 
@@ -224,6 +232,11 @@ class KwArgsChecker:
         else:
             self.map_opt_params = {}
 
+        if 'sanitize_db' in kwargs:
+            self.sanitize_db = True
+        else:
+            self.sanitize_db = True
+
         self.args = {}
 
     @staticmethod
@@ -262,6 +275,12 @@ class KwArgsChecker:
             else:
                 #print("validate scalar: ", type(entry), type(param_value), param_value)
                 KwArgsChecker.__validate_one(entry, param_name, param_value, kwargs_dict)
+
+            if self.sanitize_db:
+                val = _sanitize_db_imp(None, param_value)
+                if val is not None:
+                    kwargs_dict[ param_name ] = val
+
 
     @staticmethod
     def __validate_one( entry, param_name, param_value, args_dict):

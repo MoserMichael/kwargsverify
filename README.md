@@ -6,8 +6,9 @@
 
 ![exploits of a mom ](https://www.explainxkcd.com/wiki/images/5/5f/exploits_of_a_mom.png "Exploits of a mom") also see [explain-xkcd]( https://www.explainxkcd.com/wiki/index.php/327:_Exploits_of_a_Mom ) 
 
+(fun fact: email addresses can have a apostrophe in them - so that O'Connell will be happy, therefore: sanitizing of an email may still leave you with an usafe string, but better use sql prepared statements)
 
-The kwchecker  package simplifies validation & sanitation of python kwargs parameter, your can define most validations declaratively, in a map.
+The kwchecker package simplifies validation & sanitation of python kwargs parameter, your can define most validations declaratively, in a map.
 See the following example, where the validator definitions are passed to the ```kwchecker.KwArgsChecker``` constructor.
 
 ```
@@ -42,7 +43,7 @@ See the following example, where the validator definitions are passed to the ```
 
 ```
 The constructor has two arguments ```required``` receives the definition for mandatory parameters passed via kwargs, ```opt``` receives definitions of optional parameters.
-An errror is triggered, if an actual parameter in kwargs does not appear in any of these definitions.]
+An errror is triggered, if an actual parameter in kwargs does not appear in any of these definitions.] The constructor also has an optional ```sanitize_db``` parameter, if set to True then this will removes all ap ' and " characters.
 
 Each allowed parameter name appears as a key in the dictionary arguments. The value of the entry defines the actual validation/sanitation.
 A type value will check, if the supplied argument is of the requested type
