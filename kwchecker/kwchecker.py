@@ -1,4 +1,5 @@
 import types
+import os
 import re
 import validate_email
 
@@ -14,6 +15,7 @@ def email_validator(error_msg = None):
             if error_msg is not None:
                 raise ValueError( error_msg )
             raise ValueError(f"Error: parameter {param_name} is not a valid email")
+
     return validate
 
 def regex_validator(regular_expression, error_msg = None):
@@ -27,7 +29,6 @@ def regex_validator(regular_expression, error_msg = None):
             if error_msg is not None:
                 raise ValueError(error_msg)
             raise ValueError(f"Error: parameter {param_name} does not conform to regex {regular_expression}")
-        return None
 
     return validate
 
@@ -45,6 +46,54 @@ def no_regex_validator(regular_expression, error_msg = None):
 
     return validate
 
+def sanitize_file_path():
+    def validate(_param_name, param_value):
+        return os.path.normpath(param_value)
+    return validate
+
+def file_exists_validator(error_msg = None):
+    def validate(_param_name, param_value):
+        if not os.path.exists(param_value):
+            if error_msg is not None:
+                raise ValueError(error_msg)
+            raise ValueError(f"Error: file {param_value} does not exist")
+
+    return validate
+
+def file_readable_validator(error_msg = None):
+    def validate(_param_name, param_value):
+        if not os.path.exists(str(param_value)):
+            if error_msg is not None:
+                raise ValueError(error_msg)
+            raise ValueError(f"Error: file {param_value} does not exist")
+        if not os.access(str(param_value), os.R_OK):
+            raise ValueError(f"Error: file {param_value} is not readable")
+
+    return validate
+
+def file_writable_validator(error_msg = None):
+    def validate(_param_name, param_value):
+        if not os.path.exists(str(param_value)):
+            if error_msg is not None:
+                raise ValueError(error_msg)
+            raise ValueError(f"Error: file {param_value} does not exist")
+        if not os.access(str(param_value), os.W_OK):
+            raise ValueError(f"Error: file {param_value} is not writable")
+
+    return validate
+
+def file_executable_validator(error_msg = None):
+
+    def validate(_param_name, param_value):
+        if not os.path.exists(str(param_value)):
+            if error_msg is not None:
+                raise ValueError(error_msg)
+            raise ValueError(f"Error: file {param_value} does not exist")
+        if not os.access(str(param_value), os.X_OK):
+            raise ValueError(f"Error: file {param_value} is not executable")
+
+    return validate
+
 
 def string_list_validator(string_list, error_msg = None):
     string_list_error = ",".join(string_list)
@@ -56,6 +105,20 @@ def string_list_validator(string_list, error_msg = None):
             raise ValueError(f"Error: parameter {param_name} is not one of {string_list_error}")
 
     return validate
+
+
+def string_validator(string_list, separator = None, error_msg = None):
+    string_list_error = ",".join(string_list)
+
+    def validate(param_name, param_value):
+        for val in map(str.strip, param_value.split(separator)):
+            if str(val) not in string_list:
+                if error_msg is not None:
+                    raise ValueError(error_msg)
+                raise ValueError(f"Error: parameter {param_name}, the value {val} is not one of {string_list_error}")
+
+    return validate
+
 
 def max_string_validator(max_length, error_msg = None):
 
@@ -87,6 +150,16 @@ def string_not_empty_validator(error_msg = None):
 
     return validate
 
+def int_range_validator(from_int, to_int, error_msg = None):
+
+    def validate(param_name, param_value):
+        if int(param_value) < from_int or int(param_value) > to_int:
+            if error_msg is not None:
+                raise ValueError( error_msg )
+            raise ValueError( f"Error: parameter {param_name} is between {from_int} to {to_int}" )
+
+    return validate
+
 def int_list_validator(int_list, error_msg = None):
 
     string_list_error = ",".join( int_list.map(str))
@@ -96,6 +169,20 @@ def int_list_validator(int_list, error_msg = None):
             if error_msg is not None:
                 raise ValueError( error_msg )
             raise ValueError( f"Error: parameter {param_name} is not one of {string_list_error}" )
+
+    return validate
+
+def int_list_mask(masks, error_msg = None):
+
+    string_list_error = ",".join( masks.map(hex) )
+
+    def validate(param_name, param_value):
+
+        for mask in masks:
+            if int(param_value) & ~mask != 0:
+                if error_msg is not None:
+                    raise ValueError( error_msg )
+                raise ValueError( f"Error: parameter {param_name} is not in the bit masks {string_list_error}" )
 
     return validate
 
@@ -146,10 +233,12 @@ class KwArgsChecker:
                 if entry is None:
                     raise ValueError(f"Error: parameter name {param_name} is not defined")
 
-            if isinstance(entry, type([])) or isinstance(entry, type((1,))):
+            if isinstance(entry, (type([]), type((1,)))):
                 for validator in entry:
                     #print("validate list entry validator: ", type(validator), str(validator), "param:", type(param_value), param_value)
-                    KwArgsChecker.__validate_one(validator, param_name, param_value, kwargs_dict)
+                    val = KwArgsChecker.__validate_one(validator, param_name, param_value, kwargs_dict)
+                    if val is not None:
+                        param_value = val
             else:
                 #print("validate scalar: ", type(entry), type(param_value), param_value)
                 KwArgsChecker.__validate_one(entry, param_name, param_value, kwargs_dict)
@@ -163,12 +252,11 @@ class KwArgsChecker:
             new_value = entry( param_name, param_value )
             if new_value is not None:
                 args_dict[ param_name ] = new_value
-            return True
-        if isinstance(entry, type_type):
+                return new_value
+        elif isinstance(entry, type_type):
             if not isinstance(param_value, entry):
                 raise ValueError(f"Error: parameter {param_name} not of expected type {str(entry)}")
-            return True
-        return False
+        return None
 
     def copy_kwars(self, **kwargs):
         self.args = {}
