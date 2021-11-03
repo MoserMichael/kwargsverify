@@ -5,9 +5,29 @@ import validate_email
 
 def strip_leading_trailing_space():
     def stip_spaces(_, param_value):
-        return param_value.strip()
+        return str(param_value).strip()
 
     return stip_spaces
+
+def to_lower_case():
+    def to_lower(_param_name, param_value):
+        return str(param_value).to_lower_case()
+
+    return to_lower
+
+def to_lower_case():
+    def to_upper(_param_name, param_value):
+        return str(param_value).to_upper_case()
+
+    return to_upper
+
+def capitalize_first_letter():
+    def to_upper(_param_name, param_value):
+        return str(param_value).title()
+
+    return to_upper
+
+
 
 def email_validator(error_msg = None):
     def validate(param_name, param_value):
@@ -126,7 +146,7 @@ def max_string_validator(max_length, error_msg = None):
         if len(str(param_value)) > max_length:
             if error_msg is not None:
                 raise ValueError(error_msg)
-            raise ValueError(f"Error: parameter {param_name} has too many characters")
+            raise ValueError(f"Error: parameter {param_name} has more than {max_length} characters")
 
     return validate
 
@@ -136,7 +156,7 @@ def min_string_validator(min_length, error_msg = None):
         if len(str(param_value)) < min_length:
             if error_msg is not None:
                 raise ValueError( error_msg )
-            raise ValueError( f"Error: parameter {param_name} string is too short" )
+            raise ValueError( f"Error: parameter {param_name} string has fewer than {min_length} characters")
 
     return validate
 
@@ -146,7 +166,7 @@ def string_not_empty_validator(error_msg = None):
         if str(param_value) == "":
             if error_msg is not None:
                 raise ValueError(error_msg)
-            raise ValueError(f"Error: parameter {param_name} string is empty")
+            raise ValueError(f"Error: parameter {param_name} string may not be empty")
 
     return validate
 
@@ -156,7 +176,7 @@ def int_range_validator(from_int, to_int, error_msg = None):
         if int(param_value) < from_int or int(param_value) > to_int:
             if error_msg is not None:
                 raise ValueError( error_msg )
-            raise ValueError( f"Error: parameter {param_name} is between {from_int} to {to_int}" )
+            raise ValueError( f"Error: parameter {param_name} must be between {from_int} to {to_int}" )
 
     return validate
 
