@@ -6,7 +6,7 @@
 
 ![exploits of a mom ](https://www.explainxkcd.com/wiki/images/5/5f/exploits_of_a_mom.png "Exploits of a mom") also see [explain-xkcd]( https://www.explainxkcd.com/wiki/index.php/327:_Exploits_of_a_Mom ) 
 
-(fun fact: email addresses can have a apostrophe in them - so that O'Connell will be happy, therefore: sanitizing of an email may still leave you with an usafe string, but better use sql prepared statements)
+(fun fact: email addresses can have a apostrophe in them - so that O'Connell will be happy, however that's not a problem as the sign is allowed only in the first part of the address, and you can't have spaces in the address either. Still: better use sql prepared statements, to be on the safe side)
 
 The kwchecker package simplifies validation & sanitation of python kwargs parameter, your can define most validations declaratively, in a map.
 See the following example, where the validator definitions are passed to the ```kwchecker.KwArgsChecker``` constructor.
