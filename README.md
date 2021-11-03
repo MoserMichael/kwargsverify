@@ -45,7 +45,7 @@ A type value will check, if the supplied argument is of the requested type
 
 A funcion value will be either a validation function, or a sanitier function.
 
-```"email" : kwchecker.email_validator()``` - this validates that the ```email``` parameter in kwargs is a valid email address. Note that function ```email_validator``` is being called here, as it returns a closure.
+```"email" : kwchecker.email_validator()``` - this validates that the ```email``` parameter in kwargs is a valid email address. Note that function ```email_validator``` is being called here, as it returns a closure. Most of the verifiers can take additional arguments, like an error message that overrides the default one, therefore I kept with this convention for all validators and sanitizer functions, in order to make it consistent.
 
 You may pass a tuple of values that are either types or functions. see
 
