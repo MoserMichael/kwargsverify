@@ -11,14 +11,14 @@ install_requires = list(filter(lambda x: x[0:1] != "#", install_requires))
 print("install-requires:", install_requires)
 
 setuptools.setup(
-    name = "subb",
+    name = "kwchecker",
     version = "1.0.0",
     author = "Michael Moser",
     author_email = "moser.michael@gmail.com",
-    description = ("subb is a wrapper for python subprocess module"),
+    description = ("A declarative verifier and sanitizer for python kwargs parameters." ),
     license = "MIT",
     keywords = "utility",
-    url = "https://github.com/MoserMichael/subb",
+    url = "https://github.com/MoserMichael/kwchecker",
     package_dir={'': 'src'},
     packages=setuptools.find_packages("src"),
     long_description=read('README.md'),

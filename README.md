@@ -1,7 +1,7 @@
 
-# KWARGSVERIFY a verifier and sanitizer for python kwargs parameters
+# KWCHECKER a verifier and sanitizer for python kwargs parameters
 
-The kwargsverify package simplifies validation & sanitation of python kwargs parameter, your can define most validations declaratively, in a map.
+The kwchecker  package simplifies validation & sanitation of python kwargs parameter, your can define most validations declaratively, in a map.
 See the following example, where the validator definitions are passed to the ```kwchecker.KwArgsChecker``` constructor.
 
 ```
