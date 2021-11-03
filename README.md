@@ -1,6 +1,12 @@
 
 # KWCHECKER a verifier and sanitizer for python kwargs parameters
 
+
+
+
+![exploits of a mom ](https://www.explainxkcd.com/wiki/images/5/5f/exploits_of_a_mom.png "Exploits of a mom") also see [explain-xkcd]( https://www.explainxkcd.com/wiki/index.php/327:_Exploits_of_a_Mom ) 
+
+
 The kwchecker  package simplifies validation & sanitation of python kwargs parameter, your can define most validations declaratively, in a map.
 See the following example, where the validator definitions are passed to the ```kwchecker.KwArgsChecker``` constructor.
 
