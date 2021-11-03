@@ -67,6 +67,11 @@ You may pass a tuple of values that are either types or functions. see
 The action for the kwargs ```last_name``` parameter will first verify that parameter to be of type string, then it will verify, that the value is not an empty string ```kwchecker.no_regex_validator(r"^\s*$", "Error: empty last name")```, then it will strip the leading and trailing whitespaces ```kwchecker.strip_leading_trailing_space()```, and capitalize the first letter of the value ```kwchecker.capitalize_first_letter()```
 
 
+## Installation instructions
+
+```pip install kwchecker```
+
+Also see the project here [kwchecker](https://pypi.org/project/kwchecker/)
 
 
 
