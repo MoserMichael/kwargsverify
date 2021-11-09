@@ -12,7 +12,7 @@ print("install-requires:", install_requires)
 
 setuptools.setup(
     name = "kwchecker",
-    version = "1.0.4",
+    version = "1.1.0",
     author = "Michael Moser",
     author_email = "moser.michael@gmail.com",
     description = ("A declarative verifier and sanitizer for python kwargs parameters." ),
