@@ -109,15 +109,11 @@ class Test(unittest.TestCase):
                     "first_name": (
                         str,
                         kwchecker.no_regex_validator("^\s*$", "Error: empty first name"),
-                        kwchecker.strip_leading_trailing_space(),
-                        kwchecker.capitalize_first_letter(),
                     ),
                     "last_name": (
                         str,
                         kwchecker.no_regex_validator(r"^\s*$", "Error: empty last name"),
-                        kwchecker.strip_leading_trailing_space(),
-                        kwchecker.capitalize_first_letter(),
-                    ),
+                                            ),
 
                     "title" : str,
 
@@ -129,7 +125,8 @@ class Test(unittest.TestCase):
                 }, opt={
                     "mood": kwchecker.int_range_validator(0, 10),
                     "plan": str
-                })
+                },
+                on_all_post = (kwchecker.strip_leading_trailing_space(), kwchecker.capitalize_first_letter()) )
 
             checker.validate(kwargs)
 
@@ -140,7 +137,7 @@ class Test(unittest.TestCase):
 
         self.assertEqual( first_name, "Michael" )
         self.assertEqual( last_name , "Moser" )
-    
+
         error_text = ""
         try:
             func_to_test(first_name=" Michael ", last_name="\tMoser", title="Mr", phone="111", email="nomymail@nosuchhost.com", mood=11)

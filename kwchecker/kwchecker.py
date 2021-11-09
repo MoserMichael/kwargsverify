@@ -231,11 +231,22 @@ class KwArgsChecker:
             #print("opt:", self.map_opt_params)
         else:
             self.map_opt_params = {}
-
-        if 'sanitize_db' in kwargs:
-            self.sanitize_db = True
+        
+        if 'on_all_pre' in kwargs:
+            self.act_on_all_pre = kwargs['on_all_pre']
         else:
-            self.sanitize_db = True
+            self.act_on_all_pre = None
+
+        if 'on_all_post' in kwargs:
+            self.act_on_all_post = kwargs['on_all_post']
+        else:
+            self.act_on_all_post = None
+
+
+#        if 'sanitize_db' in kwargs:
+#            self.sanitize_db = True
+#        else:
+#            self.sanitize_db = True
 
         self.args = {}
 
@@ -266,20 +277,31 @@ class KwArgsChecker:
                 if entry is None:
                     raise ValueError(f"Error: parameter name {param_name} is not defined")
 
-            if isinstance(entry, (type([]), type((1,)))):
-                for validator in entry:
-                    #print("validate list entry validator: ", type(validator), str(validator), "param:", type(param_value), param_value)
-                    val = KwArgsChecker.__validate_one(validator, param_name, param_value, kwargs_dict)
-                    if val is not None:
-                        param_value = val
-            else:
-                #print("validate scalar: ", type(entry), type(param_value), param_value)
-                KwArgsChecker.__validate_one(entry, param_name, param_value, kwargs_dict)
+            if self.act_on_all_pre is not None:
+                KwArgsChecker.__validate( self.act_on_all_pre, param_name, param_value, kwargs_dict)
 
-            if self.sanitize_db:
-                val = _sanitize_db_imp(None, param_value)
+            KwArgsChecker.__validate( entry, param_name, param_value, kwargs_dict)
+
+            if self.act_on_all_post is not None:
+                KwArgsChecker.__validate( self.act_on_all_post, param_name, param_value, kwargs_dict)
+
+#            if self.sanitize_db:
+#                val = _sanitize_db_imp(None, param_value)
+#                if val is not None:
+#                    kwargs_dict[ param_name ] = val
+
+    @staticmethod
+    def __validate( entry, param_name, param_value, args_dict):
+        if isinstance(entry, (type([]), type((1,)))):
+            for validator in entry:
+                #print("validate list entry validator: ", type(validator), str(validator), "param:", type(param_value), param_value)
+                val = KwArgsChecker.__validate_one(validator, param_name, param_value, args_dict)
                 if val is not None:
-                    kwargs_dict[ param_name ] = val
+                    param_value = val
+        else:
+            #print("validate scalar: ", type(entry), type(param_value), param_value)
+            KwArgsChecker.__validate_one(entry, param_name, param_value, args_dict)
+
 
 
     @staticmethod
