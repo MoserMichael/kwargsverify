@@ -66,6 +66,39 @@ You may pass a tuple of values that are either types or functions. see
 ```
 The action for the kwargs ```last_name``` parameter will first verify that parameter to be of type string, then it will verify, that the value is not an empty string ```kwchecker.no_regex_validator(r"^\s*$", "Error: empty last name")```, then it will strip the leading and trailing whitespaces ```kwchecker.strip_leading_trailing_space()```, and capitalize the first letter of the value ```kwchecker.capitalize_first_letter()```
 
+### validation/modifier action on all parameters
+
+You can add actions on all parameters with the ```on_all_pre``` and ```on_all_post``` parameters. ```on_all_pre`` defines checks and validators that are run before any of the validators defined for any one of the parameters. ```on_all_post``` defines checks and validators that are run after any one of the validators defined for any one of the parameters.
+
+Here is an example that users ```on_all_post```, to strip leading and trailing spaces on all string values.
+
+```
+        def func_to_test(**kwargs):
+            checker = kwchecker.KwArgsChecker(required={
+                    "first_name": (
+                        str,
+                        kwchecker.no_regex_validator("^\s*$", "Error: empty first name"),
+                    ),
+                    "last_name": (
+                        str,
+                        kwchecker.no_regex_validator(r"^\s*$", "Error: empty last name"),
+                                            ),
+
+                    "title" : str,
+
+                    "email" : kwchecker.email_validator(),
+
+                    "phone" : (
+                        kwchecker.regex_validator(r"^[0-9\+\-,\ \(\)#]*$", "not a vald phone number")
+                        )
+                },
+                on_all_post = (kwchecker.strip_leading_trailing_space(), kwchecker.capitalize_first_letter()) 
+            )
+
+            checker.validate(kwargs)
+ 
+```
+
 
 ## Installation instructions
 
