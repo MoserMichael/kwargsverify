@@ -108,7 +108,7 @@ class Test(unittest.TestCase):
             checker = kwchecker.KwArgsChecker(required={
                     "first_name": (
                         str,
-                        kwchecker.no_regex_validator("^\s*$", "Error: empty first name"),
+                        kwchecker.no_regex_validator(r"^\s*$", "Error: empty first name"),
                     ),
                     "last_name": (
                         str,
