@@ -43,7 +43,7 @@ See the following example, where the validator definitions are passed to the ```
 
 ```
 The constructor has two arguments ```required``` receives the definition for mandatory parameters passed via kwargs, ```opt``` receives definitions of optional parameters.
-An errror is triggered, if an actual parameter in kwargs does not appear in any of these definitions.] The constructor also has an optional ```sanitize_db``` parameter, if set to True then this will removes all ap ' and " characters.
+An errror is triggered, if an actual parameter in kwargs does not appear in any of these definitions.]
 
 Each allowed parameter name appears as a key in the dictionary arguments. The value of the entry defines the actual validation/sanitation.
 A type value will check, if the supplied argument is of the requested type
